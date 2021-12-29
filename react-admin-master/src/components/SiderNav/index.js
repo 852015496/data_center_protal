@@ -3,75 +3,70 @@ import CustomMenu from "../CustomMenu/index";
 import logo from "../../assets/img/yunchuang_logo.png"
 
 const menus = [
+  // {
+  //   title: '首页',
+  //   icon: 'home',
+  //   key: '/home'
+  // },
   {
     title: '首页',
     icon: 'home',
-    key: '/home'
+    key: '/home',
+    // subs: [
+    //   {key: '/home/general/button', title: '数据中心对象关系展示', icon: ''},
+    //   {key: '/home/navigation/menu', title: '冷水机组', icon: ''},
+    //   {key: '/home/navigation/steps', title: '机房', icon: ''},
+    // ]
   },
   {
-    title: '仪表盘',
-    icon: 'dashboard',
-    key: '/home/other',
+    title: '冷源',
+    icon: 'ellipsis',
+    key: '/cold',
     subs: [
-      {key: '/home/general/button', title: '数据中心对象关系展示', icon: ''},
-      {key: '/home/navigation/menu', title: '冷水机组', icon: ''},
-      {key: '/home/navigation/steps', title: '机房', icon: ''},
-    ]
-  },
-  {
-    title: '服务集群',
-    icon: 'appstore',
-    key: '/home/general',
-    subs: [
-      {key: '/home/general/icon', title: '服务', icon: '',},
-      {key: '/home/general/nodes', title: '节点', icon: '',},
+      {key: '/cold/coldVarList', title: '冷机设备列表', icon: ''},
+      {key: '/cold/coldConfigList', title: '冷却装置信息', icon: ''},
+      {key: '/cold/naturalCold', title: '自然风冷', icon: ''},
     ]
   },
   {
     title: '机房管理',
     icon: 'database',
-    key: '/home/navigation',
+    key: '/region',
     subs: [
-      {key: '/home/navigation/region', title: '机房信息', icon: ''},
+      {key: '/region/regionMessage', title: '机房信息', icon: ''},
+      {key: '/region/regionSurvey', title: '机房概况', icon: ''},
+      {key: '/region/AiRootMessage', title: '具体空调工况及控制信息', icon: ''},
     ]
   },
   {
-    title: '策略管理',
-    icon: 'edit',
-    key: '/home/entry',
+    title: '系统管理',
+    icon: 'setting',
+    key: '/systemManagement',
     subs: [
-      {key: '/home/entry/upload', title: '策略列表', icon: ''},
-      {key: '/home/navigation/tabs', title: '策略审计', icon: ''},
-    ]
-  },
-  {
-    title: '告警管理',
-    icon: 'disconnect',
-    key: '/home/display',
-    subs: [
-      {key: '/home/display/carousel', title: '设备告警', icon: ''},
-      {key: '/home/display/collapse', title: ' 信息告警', icon: ''},
-      {key: '/home/display/list', title: '通知方式', icon: ''},
+      {key: '/systemManagement/userAndAuthority', title: '用户和权限管理', icon: '',},
+      {key: '/systemManagement/remoteLoginSetting', title: '远程登陆设置', icon: '',},
+      {key: '/systemManagement/auditLogs', title: '审计日志', icon: '',},
     ]
   },
   {
     title: '维护管理',
-    icon: 'info-circle-o',
-    key: '/home/feedback',
+    icon: 'global',
+    key: '/defend',
     subs: [
-      {key: '/home/feedback/modal', title: '审计日志', icon: '',},
-      {key: '/home/feedback/notification', title: '设备日志', icon: ''},
-      // {key: '/home/feedback/spin', title: '加载中', icon: '',}
+      {key: '/defend/equipmentList', title: '设备列表', icon: '',},
+      {key: '/defend/alarmManagerment', title: '告警管理', icon: ''},
+      {key: '/home/systemHeakthAndStatusMonitor', title: '系统健康和状态监控', icon: '',},
+      {key: '/home/AirRootDefault', title: '空调恢复默认参数', icon: ''},
     ]
   },
-  {
-    title: '人工操作',
-    icon: 'team',
-    key: '/home/people',
-    subs: [
-      {key: '/home/other/animation', title: '人工操作', icon: '',},
-    ]
-  },
+  // {
+  //   title: '人工操作',
+  //   icon: 'team',
+  //   key: '/home/people',
+  //   subs: [
+  //     {key: '/home/other/animation', title: '人工操作', icon: '',},
+  //   ]
+  // },
   // {
   //   title: '人工操作',
   //   icon: 'bulb',
@@ -86,11 +81,11 @@ const menus = [
       // {key:'/home/other/springText',title:'弹性文字',icon:''},
     // ]
   // },
-  {
-    title: '系统管理',
-    icon: 'setting',
-    key: '/home/about'
-  }
+  // {
+  //   title: '系统管理',
+  //   icon: 'setting',
+  //   key: '/home/about'
+  // }
 ]
 
 

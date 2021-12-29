@@ -3,22 +3,48 @@ import { withRouter, Switch, Redirect } from 'react-router-dom'
 import LoadableComponent from '../../utils/LoadableComponent'
 import PrivateRoute from '../PrivateRoute'
 
+//首页
 const Home = LoadableComponent(()=>import('../../routes/Home/index'))  //参数一定要是函数，否则不会懒加载，只会代码拆分
 
-//服务集群
-const ButtonDemo = LoadableComponent(()=>import('../../routes/General/nodes/index'))
-const nodes = LoadableComponent(()=>import('../../routes/General/nodes/nodes'))
+//冷源/冷机设备列表
+const coldVarList = LoadableComponent(()=>import('../../routes/General/nodes/index'))
+//冷却装置信息
+const coldConfigList = LoadableComponent(()=>import('../../routes/General/nodes/nodes'))
+//自然风冷
+const naturalCold = LoadableComponent(()=>import('../../routes/Navigation/StepsDemo/index'))
+
+//机房列表
+const regionMessage = LoadableComponent(()=>import('../../routes/Navigation/region/index'))
+//机房概况
+const regionSurvey = LoadableComponent(()=>import('../../routes/Other/SpringText/index'))
+//具体空调工况及控制信息
+const AiRootMessage = LoadableComponent(()=>import('../../routes/Other/AnimationDemo/index'))
+
+//用户权限管理
+const userAndAuthority = LoadableComponent(()=>import('../../routes/Navigation/MenuDemo/index'))
+//远程登陆设置
+const remoteLoginSetting = LoadableComponent(()=>import('../../routes/Entry/FormDemo/FormDemo1'))
+//审计日志
+const auditLogs = LoadableComponent(()=>import('../../routes/Entry/FormDemo/FormDemo2'))
+
+//设备列表
+const equipmentList = LoadableComponent(()=>import('../../routes/Feedback/SpinDemo/index'))
+//告警管理
+const alarmManagerment = LoadableComponent(()=>import('../../routes/Feedback/ModalDemo/index'))
+//系统监控和状态监控
+const systemHeakthAndStatusMonitor = LoadableComponent(()=>import('../../routes/General/nodes/nodes'))
+//空调参数默认参数
+const AirRootDefault = LoadableComponent(()=>import('../../routes/Entry/Havccmd/index'))
+
+
+
+
+
+//节点
+const nodess = LoadableComponent(()=>import('../../routes/General/nodes/nodes'))
+//服务
 const IconDemo = LoadableComponent(()=>import('../../routes/General/service/index'))
 
-//机房管理
-const region = LoadableComponent(()=>import('../../routes/Navigation/region/index'))
-const MenuDemo = LoadableComponent(()=>import('../../routes/Navigation/MenuDemo/index'))
-const StepsDemo = LoadableComponent(()=>import('../../routes/Navigation/StepsDemo/index'))
-
-//策略管理
-const FormDemo1 = LoadableComponent(()=>import('../../routes/Entry/FormDemo/FormDemo1'))
-const FormDemo2 = LoadableComponent(()=>import('../../routes/Entry/FormDemo/FormDemo2'))
-const UploadDemo = LoadableComponent(()=>import('../../routes/Entry/Havccmd/index'))
 
 //告警管理
 const CarouselDemo = LoadableComponent(()=>import('../../routes/Display/AlarmLog/index'))
@@ -27,10 +53,7 @@ const ListDemo = LoadableComponent(()=>import('../../routes/Display/ListDemo/ind
 const TableDemo = LoadableComponent(()=>import('../../routes/Display/TableDemo/index'))
 const TabsDemo = LoadableComponent(()=>import('../../routes/Display/TabsDemo/index'))
 
-//维护管理
-const SpinDemo = LoadableComponent(()=>import('../../routes/Feedback/SpinDemo/index'))
-const ModalDemo = LoadableComponent(()=>import('../../routes/Feedback/ModalDemo/index'))
-const NotificationDemo = LoadableComponent(()=>import('../../routes/Feedback/NotificationDemo/index'))
+
 
 //其它
 const AnimationDemo = LoadableComponent(()=>import('../../routes/Other/AnimationDemo/index'))
@@ -50,29 +73,29 @@ class ContentMain extends React.Component {
     return (
       <div style={{padding: 16, position: 'relative'}}>
         <Switch>
+          {/*首页*/}
           <PrivateRoute exact path='/home' component={Home}/>
+          {/*冷源*/}
+          <PrivateRoute exact path='/cold/coldVarList' component={coldVarList}/>
+          <PrivateRoute exact path='/cold/coldConfigList' component={coldConfigList}/>
+          <PrivateRoute exact path='/cold/naturalCold' component={naturalCold}/>
+          {/*机房*/}
+          <PrivateRoute exact path='/region/regionMessage' component={regionMessage}/>
+          <PrivateRoute exact path='/region/regionSurvey' component={regionSurvey}/>
+          <PrivateRoute exact path='/region/AiRootMessage' component={AiRootMessage}/>
+          {/*系统管理*/}
+          <PrivateRoute exact path='/systemManagement/userAndAuthority' component={userAndAuthority}/>
+          <PrivateRoute exact path='/systemManagement/remoteLoginSetting' component={remoteLoginSetting}/>
+          <PrivateRoute exact path='/systemManagement/auditLogs' component={auditLogs}/>
+          {/*维护管理*/}
+          <PrivateRoute exact path='/defend/equipmentList' component={equipmentList}/>
+          <PrivateRoute exact path='/defend/alarmManagerment' component={alarmManagerment}/>
+          <PrivateRoute exact path='/home/systemHeakthAndStatusMonitor' component={systemHeakthAndStatusMonitor}/>
+          <PrivateRoute exact path='/home/AirRootDefault' component={AirRootDefault}/>
 
-          <PrivateRoute exact path='/home/general/button' component={ButtonDemo}/>
-          <PrivateRoute exact path='/home/general/nodes' component={nodes}/>
-          <PrivateRoute exact path='/home/general/icon' component={IconDemo}/>
-
-          <PrivateRoute exact path='/home/navigation/region' component={region}/>
-          <PrivateRoute exact path='/home/navigation/menu' component={MenuDemo}/>
-          <PrivateRoute exact path='/home/navigation/steps' component={StepsDemo}/>
-
-          <PrivateRoute exact path='/home/entry/form/basic-form' component={FormDemo1}/>
-          <PrivateRoute exact path='/home/entry/form/step-form' component={FormDemo2}/>
-          <PrivateRoute exact path='/home/entry/upload' component={UploadDemo}/>
-
-          <PrivateRoute exact path='/home/display/carousel' component={CarouselDemo}/>
-          <PrivateRoute exact path='/home/display/collapse' component={CollapseDemo}/>
-          <PrivateRoute exact path='/home/display/list' component={ListDemo}/>
-          <PrivateRoute exact path='/home/display/table' component={TableDemo}/>
-          <PrivateRoute exact path='/home/display/tabs' component={TabsDemo}/>
-
-          <PrivateRoute exact path='/home/feedback/modal' component={ModalDemo}/>
-          <PrivateRoute exact path='/home/feedback/notification' component={NotificationDemo}/>
-          <PrivateRoute exact path='/home/feedback/spin' component={SpinDemo}/>
+          {/*<PrivateRoute exact path='/home/feedback/modal' component={ModalDemo}/>*/}
+          {/*<PrivateRoute exact path='/home/feedback/notification' component={NotificationDemo}/>*/}
+          {/*<PrivateRoute exact path='/home/feedback/spin' component={SpinDemo}/>*/}
 
           <PrivateRoute exact path='/home/other/animation' component={AnimationDemo}/>
           <PrivateRoute exact path='/home/other/gallery' component={GalleryDemo}/>

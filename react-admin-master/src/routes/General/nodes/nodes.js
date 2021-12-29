@@ -1,6 +1,8 @@
 import React from 'react'
 import { Table, Divider, Tag } from 'antd';
 import axios from 'axios';
+import CustomBreadcrumb from "../../../components/CustomBreadcrumb";
+import TypingCard from "../../../components/TypingCard";
 
 
 const columns = [
@@ -103,6 +105,7 @@ class nodes extends React.Component {
     render() {
         return (
             <div>
+                <CustomBreadcrumb arr={['冷源','冷却装置信息']}/>
                 <Table columns={columns} dataSource={this.state.data} />
             </div>
         )

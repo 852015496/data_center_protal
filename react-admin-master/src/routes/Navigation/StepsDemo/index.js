@@ -38,7 +38,7 @@ class StepsDemo extends React.Component {
     const cardContent = '当任务复杂或者存在先后关系时，将其分解成一系列步骤，从而简化任务，引导用户按照流程完成任务的导航条'
     return (
       <div>
-        <CustomBreadcrumb arr={['导航', '步骤条']}/>
+        <CustomBreadcrumb arr={['冷源', '自然风冷']}/>
         <TypingCard source={cardContent}/>
         <Row gutter={16}>
           <Col span={12}>
