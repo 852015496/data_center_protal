@@ -1,44 +1,51 @@
 import React from 'react'
-import { Table, Divider, Tag } from 'antd';
+import { Table, Divider, Tag,Badge,Switch } from 'antd';
 import axios from 'axios';
 import CustomBreadcrumb from "../../../components/CustomBreadcrumb";
 
 
 const columns = [
     {
-        title: '设备类型',
-        dataIndex: 'PType',
-    },
-    {
         title: '设备名称',
         dataIndex: 'job',
     },
     {
-        title: '设备ID',
-        dataIndex: '',
-    },
-    {
         title: 'IP地址',
-        dataIndex: 'IPAddress',
+        dataIndex: 'instance',
     },
     {
-        title: '设备状态',
-        dataIndex: 'PStatus',
-        render: (text, record) => (
-            text == 1 ? <Tag color="green">running</Tag> :  <Tag color="red">stopped</Tag>
-        ),
+        title: '监听设备',
+        dataIndex: 'hostname',
     },
     {
-        title: '运行时间',
-        dataIndex: 'PTime',
+        title: '机房编号',
+        dataIndex: 'regionid',
     },
-    {
-        title: '节能类型',
-        dataIndex: 'JNType',
-        render: (text, record) => (
-            text == 1 ? <Tag color="green">running</Tag> :  <Tag color="red">stopped</Tag>
-        ),
-    },
+    // {
+    //     title: '设备状态',
+    //     dataIndex: 'PStatus',
+    //     render: (text, record) => (
+    //         text == 1 ? <Tag color="green">running</Tag> :  <Tag color="red">stopped</Tag>
+    //     ),
+    // },
+    // {
+    //     title: '告警状态',
+    //     dataIndex: 'JNType',
+    //     render: (text, record) => (
+    //         text == 1 ?  <Badge status="error" /> : <Badge status="success" />
+    //     ),
+    // },
+    // {
+    //     title: '运行时间',
+    //     dataIndex: 'PTime',
+    // },
+    // {
+    //     title: '节能类型',
+    //     dataIndex: 'JNType',
+    //     render: (text, record) => (
+    //         text == 1 ? <Tag color="green">running</Tag> :  <Tag color="red">stopped</Tag>
+    //     ),
+    // },
     {
         title: '操作',
         dataIndex: 'availability',
@@ -48,6 +55,20 @@ const columns = [
       </span>
         ),
     },
+    // {
+    //     title: '急停',
+    //     dataIndex: 'status',
+    //     render: (record,text) => {
+    //         return (
+    //             <div>
+    //                 {
+    //                     text === 1 ? <Switch defaultChecked={false} onChange={onChange}/> : <Switch defaultChecked={true} onChange={onChange}/>
+    //                 }
+
+    //             </div>
+    //         );
+    //     },
+    // },
 ];
 
 const data = [
@@ -60,6 +81,7 @@ const data = [
         PStatus: 1,
         PTime: '2021-12-03',
         JNType: 1,
+        status: <Switch defaultChecked onChange={onChange} />
     },
     {
         key: '2',
@@ -70,6 +92,7 @@ const data = [
         PStatus: 1,
         PTime: '2021-12-03',
         JNType: 1,
+        status: <Switch defaultChecked onChange={onChange} />
     },
     {
         key: '3',
@@ -80,17 +103,23 @@ const data = [
         PStatus: 1,
         PTime: '2021-12-03',
         JNType: 1,
+        status: <Switch defaultChecked onChange={onChange} />
     },
 ];
 
+function onChange(checked) {
+    console.log(`switch to ${checked}`);
+  }
 
 class region extends React.Component {
 
     state = {
-        data:[],
+        prometheusData:[],
         Endpoint:{},
         Ports:{}
     }
+
+    
 
     serviceList = () => {
         axios.get('http://192.168.1.153:8080/region/list').then((response) => {
@@ -100,35 +129,31 @@ class region extends React.Component {
             })
         })
     }
-    serviceList = () => {
-        axios.get('http://192.168.1.174:9090/api/v1/query?query=process_start_time_seconds{job="node"}').then((response) => {
-            console.log(response);
+    
+    prometheusList = () => {
+        axios.get('http://localhost:8080/doget?urlstring=http://192.168.1.124:9090/api/v1/targets').then((response) => {
+            // console.log(response);
             let data =[];
-            for (let i = 0; i < response.data.data.result.length; i++) {
-                // console.log({ "cpu":response.data.data.result[i].metric.cpu})
-                // console.log({ "job":response.data.data.result[i].metric.job})
-                // console.log({ "value":response.data.data.result[i].value})
-                data.push({
-                    "IPAddress": response.data.data.result[i].metric.instance,"job":response.data.data.result[i].metric.hostname,
-                    // "value":response.data.data.result[i].value[0],"value2":response.data.data.result[i].value[1],
-                });
-                // console.log(data)
+            for (let i = 0; i < response.data.data.activeTargets.length; i++) {
+                data.push(response.data.data.activeTargets[i].labels);
                 this.setState({
-                    data:data
+                    prometheusData:data
                 })
+                // console.log(this.state.prometheusData)
             }
         })
     }
 
     componentDidMount() {
         this.serviceList();
+        this.prometheusList();
     }
 
     render() {
         return (
             <div>
                 <CustomBreadcrumb arr={['维护管理', '设备列表']}/>
-                <Table columns={columns} dataSource={this.state.data} />
+                <Table columns={columns} dataSource={this.state.prometheusData} />
             </div>
         )
     }

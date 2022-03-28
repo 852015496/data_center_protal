@@ -9,55 +9,38 @@ import { Chart, Geom, Axis,Line, Point, Tooltip } from 'bizcharts';
 import moment from 'moment';
 import $ from "jquery";
 import axios from 'axios';
+import { List, message, Avatar, Spin } from 'antd';
+import * as echarts from 'echarts';
+import ReactEcharts from 'echarts-for-react'
 
 
 
-// 数据源
-const data = [
-  {"date": '20200228', "value": "60"},
-  {"date": '20200229', "value": "80"},
-  {"date": '20200301', "value": "99"},
-  {"date": '20200302', "value": "89"},
-  {"date": '20200303', "value": "79"},
-  {"date": '20200304', "value": "89"},
-  {"date": '20200305', "value": "49"},
-  {"date": '20200306', "value": "79"},
-  {"date": '20200307', "value": "69"},
-];
-const scale = {
-   // date: {type: 'cat'},
-  value: {
-  	type: "linear",
-   	// formatter: val => {
-   	// 	return val + "%";
-		// },
-		// tickCount: 5,
-	  //  ticks: ["0", "25", "50", "75", "100"],
-	}
-}
+
+
+
 
 
 const columns = [
   {
-      title: '空调名称',
-      dataIndex: 'AirName',
-      key: 'AirName',
+      title: '时间戳',
+      dataIndex: 'addtime',
+      key: 'addtime',
   },
   {
-      title: '回风温度',
+      title: '空调回风温度',
       dataIndex: 'returnAirTemp',
       key: 'returnAirTemp',
   },
-  {
-      title: '水阀开度',
-      dataIndex: 'valveOpening',
-      key: 'valveOpening',
-  },
-  {
-    title: '风机额定输出',
-    dataIndex: 'fanSpeed',
-    key: 'fanSpeed',
-},
+//   {
+//       title: '水阀开度',
+//       dataIndex: 'valveOpening',
+//       key: 'valveOpening',
+//   },
+//   {
+//     title: '风机额定输出',
+//     dataIndex: 'fanSpeed',
+//     key: 'fanSpeed',
+// },
   // {
   //     title: '风扇频率',
   //     key: 'tags',
@@ -144,45 +127,7 @@ const dataList = [
 
 
 
-// 数据源
-const data2 = [
-	{
-		year: "1991",
-		value: 3,
-	},
-	{
-		year: "1992",
-		value: 4,
-	},
-	{
-		year: "1993",
-		value: 3.5,
-	},
-	{
-		year: "1994",
-		value: 5,
-	},
-	{
-		year: "1995",
-		value: 4.9,
-	},
-	{
-		year: "1996",
-		value: 6,
-	},
-	{
-		year: "1997",
-		value: 7,
-	},
-	{
-		year: "1998",
-		value: 9,
-	},
-	{
-		year: "1999",
-		value: 13,
-	},
-];
+
 
 
 
@@ -190,30 +135,89 @@ class AnimationDemo extends React.Component{
 
 
     state = {
-        data:"",
-        coolingDemand:"",
+      data: [],
+      date: [],
+      coddingDate:[],
+      coodingData:[],
+      loading: false,
+      hasMore: true,
+      coolingDemand:"",
     }
 
+    getTwoOption = ()=>{
+      let option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: this.state.date
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: this.state.data,
+          type: 'line',
+          areaStyle: {}
+        }
+      ]
+      }
+      return option;
+    }
+
+    getColdVarOption = ()=>{
+      let option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: this.state.coddingDate
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: this.state.coodingData,
+          type: 'line'
+        }
+      ]
+      }
+      return option;
+    }
+    
 
     
 
       getReturnAirTemp = () => {
-        axios.get('http://localhost:8080/havcdata/getbyname?havcId=1&valueName=returnAirTemp&interval=3&pageNum=1&pageSize=30').then((response) => {
+        axios.get('http://localhost:8080/havcdata/getbyname?havcId=1&valueName=returnAirTemp&interval=3&pageNum=1&pageSize=7').then((response) => {
           console.log(response);
           var dataArr = [];
-          function rTime(date) {
-            var json_date = new Date(date).toJSON();
-            return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-        }
+          var dateArr = [];
+        //   function rTime(date) {
+        //     var json_date = new Date(date).toJSON();
+        //     return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+        // }
           for(let i = 0; i < response.data.length; i++){
+            dateArr.push(moment(response.data[i].addtime).format("YYYY-MM-DD"))
               dataArr.push({
-                date:rTime(response.data[i].addtime),
                 value:response.data[i].value
               })
-          //  console.log(dataArr)
+          //  console.log(dateArr)
           }
           this.setState({
-            data:dataArr
+            data:dataArr,
+            date:dateArr
           })
         })
       }
@@ -223,19 +227,21 @@ class AnimationDemo extends React.Component{
         axios.get('http://localhost:8080/havcdata/getbyname?havcId=1&valueName=coolingDemand&interval=3&pageNum=1&pageSize=30').then((response) => {
           console.log(response);
           var dataArr = [];
-          function rTime(date) {
-            var json_date = new Date(date).toJSON();
-            return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-        }
+          var dateArr = [];
+        //   function rTime(date) {
+        //     var json_date = new Date(date).toJSON();
+        //     return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+        // }
           for(let i = 0; i < response.data.length; i++){
+              dateArr.push(moment(response.data[i].addtime).format("YYYY-MM-DD"))
               dataArr.push({
-                date:rTime(response.data[i].addtime),
                 value:response.data[i].value
               })
           //  console.log(dataArr)
           }
           this.setState({
-            coolingDemand:dataArr
+           coddingDate:dateArr,
+           coodingData:dataArr
           })
         })
       }
@@ -246,9 +252,11 @@ class AnimationDemo extends React.Component{
         this.getCoolingDemand();
     }
 
+   
 
 
   render(){
+    const data = this.state.coodingData;
     return (
       <div>
         <CustomBreadcrumb arr={['机房','机房详情']}/>
@@ -263,21 +271,35 @@ class AnimationDemo extends React.Component{
                 </Descriptions.Item>
             </Descriptions> */}
         </PageHeader>
+        <Row gutter={24}>
+          <Col span = {12}>
           <Card title='空调回风温度曲线' bordered={false} className='card-item'>
-              <Chart data={this.state.data} scale={scale} height={400} padding={[30, 20, 60, 40]}  forceFit interactions={['element-active']}>
-              <Axis name="date" />
-              <Axis name="value" />
-              <Geom type="line" position="date*value" shape='smooth' />
-              </Chart>
+          <div style={{
+              width: '555px',
+              height: '355px',
+              background: '#FFFFFF',
+              marginTop:'2%',
+              boxShadow: ':0px 2px 7px 1px rgba(105,106,107,0.08)'
+            }}>
+              <ReactEcharts option={this.getTwoOption()}/>
+            </div>
           </Card>
+          </Col>
+          <Col span = {12}>
           <Card title='空调制冷量曲线' bordered={false} className='card-item'>
-            <Chart height={400} data={this.state.coolingDemand} scale={scale} forceFit>
-              <Axis name="date" />
-              <Axis name="value" />
-              <Geom type="line" position="date*value" shape='smooth' />
-            </Chart>
-          </Card>
-          <Table columns={columns} dataSource={dataList} />
+          <div style={{
+              width: '555px',
+              height: '355px',
+              background: '#FFFFFF',
+              marginTop:'2%',
+              boxShadow: ':0px 2px 7px 1px rgba(105,106,107,0.08)'
+            }}>
+              <ReactEcharts option={this.getColdVarOption()}/>
+            </div>
+           </Card>
+          </Col>
+        </Row>
+        <Table columns={columns} dataSource={data} />
       </div>
     )
   }

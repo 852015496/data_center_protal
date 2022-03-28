@@ -5,24 +5,31 @@ import axios from 'axios';
 
 const columns = [
   {
-    title: '告警名称',
-    dataIndex: 'configname',
+    title: '告警时间',
+    dataIndex: 'time',
   },
   {
-    title: '配置参数',
-    dataIndex: 'configvalue',
+    title: '房间ID',
+    dataIndex: 'regionId',
   },
   {
-    title: '告警原因',
-    dataIndex: 'refHavcsetEntity.name',
+    title: '处理状态',
+    dataIndex: 'status',
+    render: (text, record) => (
+      text == 0 ? <Tag color="red">未处理</Tag> : <Tag color="green">已处理</Tag> 
+    ),
   },
   {
-    title: '空调类型',
-    dataIndex: 'refHavcsetEntity.refHavcmetaEntity.brand',
+    title: '告警类型',
+    dataIndex: 'code',
   },
   {
-    title: '操作',
-    dataIndex: 'active',
+    title: '告警信息',
+    dataIndex: 'description',
+  },
+  // {
+  //   title: '操作',
+  //   dataIndex: 'active',
     // render: (text, record) => (
     //     <span size="middle">
     //       <a>默认</a>
@@ -32,9 +39,7 @@ const columns = [
     //      <a>全自动</a>
     //     </span>
     // ),
-
-
-  },
+  // },
 ];
 
 
@@ -48,11 +53,10 @@ class alarmlog extends React.Component {
   }
 
   havcList = () => {
-    axios.get('http://192.168.1.153:8080/havccmd/list').then((response) => {
-      var data = response.data.content
-      console.log(data)
+    axios.get('http://localhost:8080/warning/list').then((response) => {
+      console.log(response)
       this.setState({
-        data:data
+        data:response.data.content
       })
     })
   }

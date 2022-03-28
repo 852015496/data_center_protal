@@ -16,6 +16,8 @@ import {
   Geom
 } from 'bizcharts';
 import CustomBreadcrumb from "../../../components/CustomBreadcrumb";
+import * as echarts from 'echarts';
+import ReactEcharts from 'echarts-for-react'
 
 let data1;
 $.ajax({
@@ -24,84 +26,6 @@ $.ajax({
   success: (iData) => { data1 = iData }
 });
 
-// 空调热力图
-//下标0:代表第一列
-//下标1:代表第一行
-//下标2:代表的是值
-  const data = [
-    [0, 0, 10],
-    [0, 1, 19],
-    [0, 2, 8],
-    [0, 3, 24],
-    [0, 4, 67],
-    [1, 0, 92],
-    [1, 1, 58],
-    [1, 2, 78],
-    [1, 3, 117],
-    [1, 4, 48],
-    [2, 0, 35],
-    [2, 1, 15],
-    [2, 2, 123],
-    [2, 3, 64],
-    [2, 4, 52],
-    [3, 0, 72],
-    [3, 1, 132],
-    [3, 2, 114],
-    [3, 3, 19],
-    [3, 4, 16],
-    [4, 0, 38],
-    [4, 1, 5],
-    [4, 2, 8],
-    [4, 3, 117],
-    [4, 4, 115],
-    [5, 0, 88],
-    [5, 1, 32],
-    [5, 2, 12],
-    [5, 3, 6],
-    [5, 4, 120],
-    [6, 0, 13],
-    [6, 1, 44],
-    [6, 2, 88],
-    [6, 3, 98],
-    [6, 4, 96],
-    [7, 0, 31],
-    [7, 1, 1],
-    [7, 2, 82],
-    [7, 3, 32],
-    [7, 4, 30],
-    [8, 0, 85],
-    [8, 1, 97],
-    [8, 2, 123],
-    [8, 3, 64],
-    [8, 4, 84],
-    [9, 0, 47],
-    [9, 1, 114],
-    [9, 2, 31],
-    [9, 3, 48],
-    [9, 4, 91],
-  ];
-  const source = data.map((arr) => {
-    return {
-      name: arr[0],
-      day: arr[1],
-      sales: arr[2],
-    };
-  });
-  const scale = {
-    //名称 列展示
-    name: {
-      type: 'cat',
-      values: ['Alexander', 'Marie', 'Maximilian', 'Sophia', 'Lukas', 'Maria', 'Leon', 'Anna', 'Tim', 'Laura'],
-    },
-    //日期 行展示
-    day: {
-      type: 'cat',
-      values: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    },
-    sales: {
-      nice: true,
-    }
-  };
 
 const columns = [
     {
@@ -163,9 +87,9 @@ const columns = [
         ),
     },
     {
-        title: '空调制冷量',
-        dataIndex: 'coolingDemand',
-        key: 'coolingDemand',
+        title: '空调制冷输出',
+        dataIndex: 'coolingOutput',
+        key: 'coolingOutput',
     },
     {
         title: '操作',
@@ -217,13 +141,64 @@ const dataList = [
         ktzll: '90',
     },
 ];
-
+let colors = {
+  4: "rgba(216,70,10,1)",
+  3: "rgba(216,121,10,1)",
+  2: "rgba(226,187,32,1)",
+  1: "rgba(2,189,229,1)",
+}
 class SpringText extends React.Component{
 
   state = {
       data:"",
+      regionY:[],
+      regionx:[]
   }
 
+
+  
+
+  getTwoOption = ()=>{
+    let option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {},
+    grid: {
+      // top:'15%',
+      left: '3%',
+      right: '4%',
+      bottom: '5%',
+      containLabel: true
+    },
+    xAxis: {
+      show:false,
+      type: 'value',
+      boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+      type: 'category',
+      data:this.state.regionY
+    },
+    series: [
+      {
+        type: 'bar',
+        data: this.state.regionX
+      },
+    ]
+    }
+    return option;
+  }
+  
 
   toAirList = () => {
     axios.get('http://localhost:8080/havcset/getlistbyregion?regionId=1').then((response) => {
@@ -232,7 +207,7 @@ class SpringText extends React.Component{
       for(let i = 0; i < response.data.length; i++){
           dataArr.push({
             id:i+1,AirName:response.data[i].name,setTemp:response.data[i].setTemp,returnAirTemp:response.data[i].returnAirTemp,
-            coolingDemand:response.data[i].coolingDemand,fanSpeed:response.data[i].fanSpeed,isRunning:response.data[i].isRunning
+            coolingOutput:response.data[i].coolingOutput,fanSpeed:response.data[i].fanSpeed,isRunning:response.data[i].isRunning
           })
        console.log(dataArr)
       }
@@ -248,8 +223,27 @@ class SpringText extends React.Component{
     // }
   }
 
+  getRegionByColl = () => {
+    axios.get('http://localhost:8080/region/getRegionByColl').then((response) => {
+      console.log(response);
+      let ydata = []
+      let xdata = []
+     for (let i = 0; i < response.data.length; i++) {
+      ydata.push(response.data[i].valuename) 
+      xdata.push(response.data[i].value)
+     }
+     console.log(ydata)
+      console.log(xdata)
+      this.setState({
+        regionX:xdata,
+        regionY:ydata
+      })
+    })
+  }
+
   componentDidMount(){
     this.toAirList();
+    this.getRegionByColl();
   }
 
 
@@ -273,69 +267,20 @@ class SpringText extends React.Component{
         {/*</PageHeader>*/}
         <Row gutter={24}>
           <Col span={12}>
-            <Card title='空调制冷分布图' bordered={false} className='card-item'>
-              <Chart
-                  scale={scale}
-                  height={500}
-                  data={source}
-                  forceFit
-                  pure
-              >
-
-                {/*<Axis*/}
-                {/*    name={'name'}*/}
-                {/*    tickLine={null}*/}
-                {/*    grid={{*/}
-                {/*      alignTick: false,*/}
-                {/*      line: {*/}
-                {/*        style: {*/}
-                {/*          lineWidth: 1,*/}
-                {/*          lineDash: null,*/}
-                {/*          stroke: '#f0f0f0',*/}
-                {/*        },*/}
-                {/*      },*/}
-                {/*    }}*/}
-                {/*/>*/}
-                {/*<Axis*/}
-                {/*    name={'day'}*/}
-                {/*    title={null}*/}
-                {/*    grid={{*/}
-                {/*      alignTick: false,*/}
-                {/*      line: {*/}
-                {/*        style: {*/}
-                {/*          lineWidth: 1,*/}
-                {/*          lineDash: null,*/}
-                {/*          stroke: '#f0f0f0',*/}
-                {/*        },*/}
-                {/*      },*/}
-                {/*    }}*/}
-                {/*/>*/}
-                <Tooltip shared showMarkers={false}/>
-                <Geom
-                    type="polygon"
-                    position="name*day"
-                    color={['sales', '#BAE7FF-#1890FF-#0050B3']}
-                    style={{
-                      stroke: '#fff',
-                      lineWidth: 1,
-                    }}
-                >
-                  <Label
-                      content="sales"
-                      offset={-2}
-                      textStyle={{
-                        fill: '#fff',
-                        fontWeight: 'bold',
-                        shadowBlur: 2,
-                        shadowColor: 'rgba(0, 0, 0, .45)',
-                      }}
-                  />
-                </Geom>
-              </Chart>
+            <Card title='空调制冷量' bordered={false} className='card-item'>
+            <div style={{
+              width: '555px',
+              height: '495px',
+              background: '#FFFFFF',
+              marginTop:'2%',
+              boxShadow: ':0px 2px 7px 1px rgba(105,106,107,0.08)'
+            }}>
+              <ReactEcharts option={this.getTwoOption()}/>
+            </div>
             </Card>
           </Col>
           <Col span={12}>
-            <Card title='温感热力分布图' bordered={false} className='card-item'>
+            <Card title='温感热力图' bordered={false} className='card-item'>
               <Chart
                   padding={[0, 30, 60, 30]}
                   data={data1}
@@ -348,7 +293,7 @@ class SpringText extends React.Component{
                     position="g*l"
                     color={[
                       "tmp",
-                      "#F51D27-#FA541C-#FF8C12-#FFC838-#FAFFA8-#80FF73-#12CCCC-#1890FF-#6E32C2"
+                      "#6E32C2-#1890FF-#12CCCC-#80FF73-#FAFFA8-#FFC838-#FF8C12-#FA541C-#F51D27"
                     ]}
                 />
                 <Guide>

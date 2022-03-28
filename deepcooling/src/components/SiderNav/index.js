@@ -1,6 +1,6 @@
 import React from 'react'
 import CustomMenu from "../CustomMenu/index";
-import logo from "../../assets/img/yunchuang_logo.png"
+import logo from "../../assets/img/deepcooling.png"
 import axios from 'axios'
 
 
@@ -16,9 +16,6 @@ class SiderNav extends React.Component {
   }
 
 
-  toRegionArr = () => {
-   
-  }
   
 toSiderNav = () => {
   axios.get('http://localhost:8080/building/getlistbyidc?idcId=105').then((response) => {
@@ -28,22 +25,21 @@ toSiderNav = () => {
       let buildingArr = [];
       for (let i = 0; i < response.data.length; i++) {
         var buildingName = response.data[i].bldname;
+        var id = response.data[i].id;
         let subs = [];
         for(let j =0;j<resp.data.length; j++){
           var regionName = resp.data[j].name;
-          subs.push({
-            key:`/region/regionMessage/${regionName}`,title:regionName,icon:'',
-          })
+          var bldid = resp.data[j].bldid;
+          if (bldid == id){
+            subs.push({
+              key:`/region/regionMessage/${regionName}`,title:regionName,icon:'',
+            })
+            buildingArr.push({
+              key: `/region/${buildingName}`, title: buildingName, icon: '',
+              subs   
+            })
+          }
         }
-        buildingArr.push({
-          key: `/region/${buildingName}`, title: buildingName, icon: '',
-          subs   
-          // subs:[
-          //   {key: '/region/regionMessage/101号机楼', title: '101机房', icon: ''},
-          //   {key: '/region/regionMessage/102号机楼', title: '102机房', icon: ''},
-          //   {key: '/region/regionMessage/103号机楼', title: '103机房', icon: ''},
-          // ]
-        })
       }
       this.setState({
         buildingArr:buildingArr
@@ -54,7 +50,6 @@ toSiderNav = () => {
 
 componentDidMount(){
   this.toSiderNav();
-  this.toRegionArr();
 }
 
 
@@ -137,45 +132,45 @@ componentDidMount(){
         //   // {key: '/region/AiRootMessage', title: '空调工况及控制信息', icon: ''},
         // ]
       },
-      {
-        title: '冷源',
-        icon: 'ellipsis',
-        key: '/cold',
-        subs: [
-          {key: '/cold/coldVarList', title: '冷机设备列表', icon: ''},
-          {key: '/cold/coldConfigList', title: '冷却装置信息', icon: ''},
-          // {key: '/cold/naturalCold', title: '自然风冷', icon: ''},
-        ]
-      },
+      // {
+      //   title: '冷源',
+      //   icon: 'ellipsis',
+      //   key: '/cold',
+      //   subs: [
+      //     {key: '/cold/coldVarList', title: '冷机设备列表', icon: ''},
+      //     {key: '/cold/coldConfigList', title: '冷却装置信息', icon: ''},
+      //     // {key: '/cold/naturalCold', title: '自然风冷', icon: ''},
+      //   ]
+      // },
       {
         title: '系统管理',
         icon: 'setting',
         key: '/systemManagement',
         subs: [
-          {key: '/systemManagement/userAndAuthority', title: '用户和权限管理', icon: '',},
-          {key: '/systemManagement/remoteLoginSetting', title: '远程登陆设置', icon: '',},
-          {key: '/systemManagement/auditLogs', title: '审计日志', icon: '',},
+          {key: '/systemManagement/userAndAuthority', title: '用户管理', icon: '',},
+          // {key: '/systemManagement/remoteLoginSetting', title: '远程登陆设置', icon: '',},
+          // {key: '/systemManagement/auditLogs', title: '审计日志', icon: '',},
         ]
       },
       {
-        title: '维护管理',
+        title: '边缘节点管理',
         icon: 'global',
         key: '/defend',
         subs: [
-          {key: '/defend/equipmentList', title: '设备列表', icon: '',},
-          {key: '/defend/alarmManagerment', title: '告警管理', icon: ''},
-          {key: '/home/systemHeakthAndStatusMonitor', title: '系统健康和状态监控', icon: '',},
-          {key: '/home/AirRootDefault', title: '空调恢复默认参数', icon: ''},
+          {key: '/defend/equipmentList', title: '边缘节点列表', icon: '',},
+          // {key: '/defend/alarmManagerment', title: '告警管理', icon: ''},
+          // {key: '/home/systemHeakthAndStatusMonitor', title: '系统健康和状态监控', icon: '',},
+          // {key: '/home/AirRootDefault', title: '空调恢复默认参数', icon: ''},
         ]
       },
-      // {
-      //   title: '人工操作',
-      //   icon: 'team',
-      //   key: '/home/people',
-      //   subs: [
-      //     {key: '/home/other/animation', title: '人工操作', icon: '',},
-      //   ]
-      // },
+      {
+        title: '告警管理',
+        icon: 'team',
+        key: '/home/people',
+        subs: [
+          {key: '/defend/alarmManagerment', title: '告警信息', icon: '',},
+        ]
+      },
       // {
       //   title: '人工操作',
       //   icon: 'bulb',
@@ -199,7 +194,9 @@ componentDidMount(){
     
     return (
       <div style={{height: '100vh',overflowY:'scroll'}}>
-        <div style={styles.logo}><center><img src={logo}/></center></div>
+        <div style={styles.logo}>
+          {/* <center><img src={logo}/></center> */}
+          </div>
         <CustomMenu menus={menus}/>
       </div>
     )
@@ -210,7 +207,9 @@ const styles = {
   logo: {
     height: '32px',
     // background: 'rgba(255, 255, 255, .2)',
+    background: 'rgb(0 21 41)',
     margin: '16px'
+    // margin: '16px'
   }
 }
 

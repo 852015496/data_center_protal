@@ -33,7 +33,7 @@ const remoteLoginSetting = LoadableComponent(()=>import('../../routes/Entry/Form
 //审计日志
 const auditLogs = LoadableComponent(()=>import('../../routes/Entry/FormDemo/FormDemo2'))
 
-//设备列表
+//边缘节点 设备列表
 const equipmentList = LoadableComponent(()=>import('../../routes/Navigation/region/index'))
 // const equipmentList = LoadableComponent(()=>import('../../routes/Feedback/SpinDemo/index'))
 //告警管理
@@ -78,24 +78,29 @@ const About = LoadableComponent(()=>import('../../routes/About/index'))
 @withRouter
 class ContentMain extends React.Component {
 
+  constructor(){
+    super();
+  }
 
   state ={
-    super:{
-      regionNmame:''
-    }
+      regionArr:[]
   }
 
   componentDidMount(){
     axios.get('http://localhost:8080/region/getRegionList').then((resp) => {
-      console.log(resp);
+      // console.log(resp);
+      let regionArr = [];
       for(let j =0;j<resp.data.length; j++){
-        var regionName = resp.data[j].name;
+        regionArr.push({
+          "regionName":resp.data[j].name
+        })
       }
+      this.setState({
+        regionArr:regionArr
+      })
     })
   }
   render () {
-    const regionName = regionName;
-    console.log(regionName)
     return (
       <div style={{padding: 16, position: 'relative'}}>
         <Switch>
@@ -107,9 +112,17 @@ class ContentMain extends React.Component {
           <PrivateRoute exact path='/cold/coldConfigList' component={coldConfigList}/>
           <PrivateRoute exact path='/cold/coldConfigDetails' component={coldConfigDetails}/>
           <PrivateRoute exact path='/cold/naturalCold' component={naturalCold}/>
-          {/*机房*/}
-          <PrivateRoute exact path='/region/regionMessage/3223机房' component={regionMessage}/>
-          <PrivateRoute exact path='/region/regionMessage/102号机楼' component={regionMessage}/>
+          {/*机房*/} 
+          {
+            this.state.regionArr.map((item) =>{
+              // console.log(item);
+              var url = `/region/regionMessage/${item.regionName}`;
+              // console.log(url);
+              return <PrivateRoute exact path={url} component={regionMessage}/>
+            })
+          }
+         
+          {/* <PrivateRoute exact path='/region/regionMessage/203机房' component={regionMessage}/>
           <PrivateRoute exact path='/region/regionMessage/103号机楼' component={regionMessage}/>
           <PrivateRoute exact path='/region/regionMessage/201号机楼' component={regionMessage}/>
           <PrivateRoute exact path='/region/regionMessage/202号机楼' component={regionMessage}/>
@@ -122,7 +135,7 @@ class ContentMain extends React.Component {
           <PrivateRoute exact path='/region/regionMessage/403号机楼' component={regionMessage}/>
           <PrivateRoute exact path='/region/regionMessage/501号机楼' component={regionMessage}/>
           <PrivateRoute exact path='/region/regionMessage/502号机楼' component={regionMessage}/>
-          <PrivateRoute exact path='/region/regionMessage/503号机楼' component={regionMessage}/>
+          <PrivateRoute exact path='/region/regionMessage/503号机楼' component={regionMessage}/> */}
           {/* <PrivateRoute exact path='/region/regionSurvey' component={regionSurvey}/> */}
           {/* 机房详情 */}
           <PrivateRoute exact path='/region/AirRootList' component={AirRootList}/>

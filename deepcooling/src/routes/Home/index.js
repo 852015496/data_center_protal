@@ -14,90 +14,10 @@ import {
   Tooltip,
   Label,
 } from 'bizcharts';
-const dataArr = [
-  [0, 0, 10],
-  [0, 1, 19],
-  [0, 2, 8],
-  [0, 3, 24],
-  [0, 4, 67],
-  [1, 0, 92],
-  [1, 1, 58],
-  [1, 2, 78],
-  [1, 3, 117],
-  [1, 4, 48],
-  [2, 0, 35],
-  [2, 1, 15],
-  [2, 2, 123],
-  [2, 3, 64],
-  [2, 4, 52],
-  [3, 0, 72],
-  [3, 1, 132],
-  [3, 2, 114],
-  [3, 3, 19],
-  [3, 4, 16],
-  [4, 0, 38],
-  [4, 1, 5],
-  [4, 2, 8],
-  [4, 3, 117],
-  [4, 4, 115],
-  [5, 0, 88],
-  [5, 1, 32],
-  [5, 2, 12],
-  [5, 3, 6],
-  [5, 4, 120],
-  [6, 0, 13],
-  [6, 1, 44],
-  [6, 2, 88],
-  [6, 3, 98],
-  [6, 4, 96],
-  [7, 0, 31],
-  [7, 1, 1],
-  [7, 2, 82],
-  [7, 3, 32],
-  [7, 4, 30],
-  [8, 0, 85],
-  [8, 1, 97],
-  [8, 2, 123],
-  [8, 3, 64],
-  [8, 4, 84],
-  [9, 0, 47],
-  [9, 1, 114],
-  [9, 2, 31],
-  [9, 3, 48],
-  [9, 4, 91],
-];
-const source = [];
 
-for (let i = 0; i < dataArr.length; i++) {
-  const item = dataArr[i];
-  const obj = {};
-  obj.name = item[0];
-  obj.day = item[1];
-  obj.sales = item[2];
-  source.push(obj);
-}
 
-const cols = {
-  name: {
-    type: 'cat',
-    values: [
-      'Alexander',
-      'Marie',
-      'Maximilian',
-      'Sophia',
-      'Lukas',
-      'Maria',
-      'Leon',
-      'Anna',
-      'Tim',
-      'Laura',
-    ],
-  },
-  day: {
-    type: 'cat',
-    values: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-  },
-};
+
+
 
 const imgs = [
   'http://47.99.130.140/imgs/wallhaven-p8r1e9.jpg',
@@ -125,7 +45,9 @@ class Home extends React.Component {
     offAirStatusNumber:"",
     clodAirArrNumber:"",
     onClodAirArrNumber:"",
-    offClodAirArrNumber:""
+    offClodAirArrNumber:"",
+    regionY:[],
+    regionX:[]
   }
 
   componentDidMount(){
@@ -137,6 +59,7 @@ class Home extends React.Component {
     this.clodAirArrNumber();
     this.onClodAirArrNumber();
     this.offClodAirArrNumber();
+    this.getRegionByColl();
   }
 
   buildingNumber = () => {
@@ -218,6 +141,26 @@ class Home extends React.Component {
       })
     })
   }
+
+
+  getRegionByColl = () => {
+    axios.get('http://localhost:8080/region/getRegionByColl').then((response) => {
+      console.log(response);
+      let ydata = []
+      let xdata = []
+     for (let i = 0; i < response.data.length; i++) {
+      ydata.push(response.data[i].valuename) 
+      xdata.push(response.data[i].value)
+     }
+     console.log(ydata)
+      console.log(xdata)
+      this.setState({
+        regionX:xdata,
+        regionY:ydata
+      })
+    })
+  }
+  
 
 
   getDataCenterTemp30 = () =>{
@@ -519,43 +462,43 @@ class Home extends React.Component {
   }
 
 
-  getBuZhiDaoName = () => {
+  getTwoOption = ()=>{
     let option = {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'shadow'
+            type: 'shadow'
         }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {},
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      show:false,
+      type: 'value',
+      boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+      type: 'category',
+      data: this.state.regionY
+    },
+    series: [
+      {
+        type: 'bar',
+        data: this.state.regionX
       },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          axisTick: {
-            alignWithLabel: true
-          }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value'
-        }
-      ],
-      series: [
-        {
-          name: 'Direct',
-          type: 'bar',
-          barWidth: '60%',
-          data: [10, 52, 200, 334, 390, 330, 220]
-        }
-      ]
-    };
+    ]
+    }
     return option;
   }
 
@@ -604,78 +547,23 @@ class Home extends React.Component {
               </Card>
             </Col>
           </Row>
-            <Row>
-              <Col span={12}>
-                <Card size="small" title="冷机制冷负载趋势图" bordered={false}>
-                  <ReactEcharts option={this.getDataCenterTemp30()}/>
-                </Card>
-              </Col>
-              <Col span={12}>
-                <Card size="small" title="冷却制冷负载趋势图" bordered={false}>
-                  <ReactEcharts option={this.getDataCenterTemp30()}/>
-                </Card>
-              </Col>
-            </Row>
           <Row>
             <Col span={12}>
-              <Card size="small" title="冷却塔负载个数趋势图" bordered={false}>
+              <Card size="small" title="***" bordered={false}>
                 <ReactEcharts option={this.getDataCenterTemp30()}/>
               </Card>
             </Col>
             <Col span={12}>
-              <Card size="small" title="机房平均温度热力图" bordered={false}>
-                <Chart
-                    height={300}
-                    data={source}
-                    scale={cols}
-                    padding={[20, 80, 120, 85]}
-                    forceFit
-                >
-                  {/*<Axis*/}
-                  {/*    name="name"*/}
-                  {/*    grid={{*/}
-                  {/*      align: 'center',*/}
-                  {/*      lineStyle: {*/}
-                  {/*        lineWidth: 1,*/}
-                  {/*        lineDash: null,*/}
-                  {/*        stroke: '#f0f0f0',*/}
-                  {/*      },*/}
-                  {/*      showFirstLine: true,*/}
-                  {/*    }}*/}
-                  {/*/>*/}
-                  {/*<Axis*/}
-                  {/*    name="day"*/}
-                  {/*    grid={{*/}
-                  {/*      align: 'center',*/}
-                  {/*      lineStyle: {*/}
-                  {/*        lineWidth: 1,*/}
-                  {/*        lineDash: null,*/}
-                  {/*        stroke: '#f0f0f0',*/}
-                  {/*      },*/}
-                  {/*    }}*/}
-                  {/*/>*/}
-                  <Tooltip />
-                  <Geom
-                      type="polygon"
-                      position="name*day"
-                      color={['sales', '#BAE7FF-#1890FF-#0050B3']}
-                      style={{
-                        stroke: '#fff',
-                        lineWidth: 1,
-                      }}
-                  >
-                    <Label
-                        content="sales"
-                        offset={-2}
-                        textStyle={{
-                          fill: '#fff',
-                          fontWeight: 'bold',
-                          shadowBlur: 2,
-                          shadowColor: 'rgba(0, 0, 0, .45)',
-                        }}
-                    />
-                  </Geom>
-                </Chart>
+              <Card size="small" title="机房空调平均制冷量" bordered={false}>
+                 <div style={{
+              width: '555px',
+              height: '285px',
+              background: '#FFFFFF',
+              marginTop:'2%',
+              boxShadow: ':0px 2px 7px 1px rgba(105,106,107,0.08)'
+            }}>
+              <ReactEcharts option={this.getTwoOption()}/>
+            </div>
               </Card>
             </Col>
           </Row>
