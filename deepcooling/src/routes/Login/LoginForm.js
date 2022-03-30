@@ -172,12 +172,12 @@ class LoginForm extends React.Component {
           </Form.Item>
           <div className='bottom'>
             <input className='loginBtn' type="submit" value='登录'/>
-            <span className='registerBtn' onClick={this.register}>注册</span>
+            {/* <span className='registerBtn' onClick={this.register}>注册</span> */}
           </div>
         </Form>
-        <div className='footer'>
+        {/* <div className='footer'>
           <div>欢迎登陆后台管理系统</div>
-        </div>
+        </div> */}
       </div>
     )
   }

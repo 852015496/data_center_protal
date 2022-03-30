@@ -36,7 +36,7 @@ class Index extends React.Component{
             <Content>
               <ContentMain/>
             </Content>
-            <Footer style={{textAlign: 'center'}}>数据中心监控管理平台 Deep Cooling @2021 <a target='_blank' href='http://quarkdata.cn/'>官网地址</a></Footer>
+            <Footer style={{textAlign: 'center'}}>DeepCooling @2022 <a target='_blank' href='http://quarkdata.cn/'>官网地址</a></Footer>
           </Layout>
         </Layout>
       </div>

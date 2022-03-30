@@ -539,11 +539,10 @@ class Home extends React.Component {
             <Col span={8}>
               <Card title = "设备环境摘要" style={{height:'300px'}}>
                 <p>机能一体机运行总数：20个</p>
-                <p>机能一体机运行数量：19</p>
-                <p>机能一体机关闭数量：1个</p>
+                <p>机能一体机运行状态：19</p>
+                <p>机能一体机关闭状态：1个</p>
                 <p>PLC总数：1个</p>
-                <p>PLC运行数量：1个</p>
-                <p>PLC关闭数量：1个</p>
+                
               </Card>
             </Col>
           </Row>

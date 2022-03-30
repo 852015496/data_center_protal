@@ -21,7 +21,7 @@ import ReactEcharts from 'echarts-for-react'
 
 let data1;
 $.ajax({
-  url: "https://alifd.alibabausercontent.com/materials/@bizcharts/heatmap-image/0.3.0/mock.json",
+  url: "http://localhost:8080/sensordata/getTempbyregion?regionName=电信研究院508机房",
   async : false,
   success: (iData) => { data1 = iData }
 });
@@ -292,17 +292,17 @@ class SpringText extends React.Component{
                     type="heatmap"
                     position="g*l"
                     color={[
-                      "tmp",
+                      "value",
                       "#6E32C2-#1890FF-#12CCCC-#80FF73-#FAFFA8-#FFC838-#FF8C12-#FA541C-#F51D27"
                     ]}
                 />
-                <Guide>
+                {/* <Guide>
                   <Image
                       start={["min", "max"]}
                       end={["max", "min"]}
-                      // src="https://gw.alipayobjects.com/zos/rmsportal/NeUTMwKtPcPxIFNTWZOZ.png"
+                      src="https://gw.alipayobjects.com/zos/rmsportal/NeUTMwKtPcPxIFNTWZOZ.png"
                   />
-                </Guide>
+                </Guide> */}
               </Chart>
             </Card>
           </Col>
