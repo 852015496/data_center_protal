@@ -72,6 +72,15 @@ componentDidMount(){
         // ]
       },
       {
+        title: '告警管理',
+        icon: 'team',
+        key: '/home/people',
+        subs: [
+          {key: '/defend/alarmManagerment', title: '告警信息', icon: '',},
+        ]
+      },
+     
+      {
         title: '机房管理',
         icon: 'database',
         key: '/region',
@@ -143,16 +152,6 @@ componentDidMount(){
       //   ]
       // },
       {
-        title: '系统管理',
-        icon: 'setting',
-        key: '/systemManagement',
-        subs: [
-          {key: '/systemManagement/userAndAuthority', title: '用户管理', icon: '',},
-          // {key: '/systemManagement/remoteLoginSetting', title: '远程登陆设置', icon: '',},
-          // {key: '/systemManagement/auditLogs', title: '审计日志', icon: '',},
-        ]
-      },
-      {
         title: '边缘节点管理',
         icon: 'global',
         key: '/defend',
@@ -164,11 +163,13 @@ componentDidMount(){
         ]
       },
       {
-        title: '告警管理',
-        icon: 'team',
-        key: '/home/people',
+        title: '系统管理',
+        icon: 'setting',
+        key: '/systemManagement',
         subs: [
-          {key: '/defend/alarmManagerment', title: '告警信息', icon: '',},
+          {key: '/systemManagement/userAndAuthority', title: '用户管理', icon: '',},
+          // {key: '/systemManagement/remoteLoginSetting', title: '远程登陆设置', icon: '',},
+          // {key: '/systemManagement/auditLogs', title: '审计日志', icon: '',},
         ]
       },
       // {

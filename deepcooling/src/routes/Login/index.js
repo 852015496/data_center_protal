@@ -9,8 +9,11 @@ import {preloadingImages} from '../../utils/utils'
 import 'animate.css'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
+import background from '../../assets/img/deepcooling.png'
 
-const url = 'http://47.99.130.140/imgs/photo.jpg'
+
+const url = background
+// const url = 'http://47.99.130.140/imgs/photo.jpg'
 const imgs = [
   'http://47.99.130.140/imgs/wallhaven-p8r1e9.jpg',
   'http://47.99.130.140/imgs/wallhaven-e7zyy8.jpg',
@@ -118,9 +121,9 @@ const styles = {
   backgroundBox: {
     position: 'fixed',
     top: '0',
-    left: '0',
-    width: '100vw',
-    height: '100vh',
+    left: '5',
+    width: '20%',
+    height: '27%',
     backgroundImage: `url(${url})`,
     backgroundSize: 'cover',
     transition:'all .5s'

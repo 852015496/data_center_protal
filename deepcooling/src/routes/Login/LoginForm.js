@@ -2,11 +2,15 @@ import React from 'react'
 import { randomNum, calculateWidth } from '../../utils/utils'
 import { withRouter } from 'react-router-dom'
 import { inject, observer } from 'mobx-react/index'
-import { Form, Input, Row, Col } from 'antd'
+import { Form, Input, Row, Col ,message} from 'antd'
 import PromptBox from '../../components/PromptBox'
+import Password from 'antd/lib/input/Password'
+import axios from 'axios';
+import {authenticateSuccess} from '../../utils/Session'
 
+//@inject('appStore') @observer
 
-@withRouter @inject('appStore') @observer @Form.create()
+@withRouter @Form.create()
 class LoginForm extends React.Component {
   state = {
     focusItem: -1,   //保存当前聚焦的input
@@ -56,6 +60,8 @@ class LoginForm extends React.Component {
       focusItem: -1
     })
     this.props.form.validateFields((err, values) => {
+      console.log(err)
+      console.log(values)
       if (!err) {
         // 表单登录时，若验证码长度小于4则不会验证，所以我们这里要手动验证一次，线上的未修复
         if (this.state.code.toUpperCase() !== values.verification.toUpperCase()) {
@@ -67,42 +73,79 @@ class LoginForm extends React.Component {
           })
           return
         }
-
-        const users = this.props.appStore.users
-        // 检测用户名是否存在
-        const result = users.find(item => item.username === values.username)
-        if (!result) {
-          this.props.form.setFields({
-            username: {
-              value: values.username,
-              errors: [new Error('用户名不存在')]
-            }
-          })
-          return
-        } else {
-          //检测密码是否错误
-          if (result.password !== values.password) {
-            this.props.form.setFields({
-              password: {
-                value: values.password,
-                errors: [new Error('密码错误')]
+            if (values.username == undefined && values.password == undefined || values.username == "" && values.password == "") {
+              message.error("请输入用户名和密码")
+            } else if (values.username == undefined || values.username == "") {
+              message.error("请输入用户名")
+            } else if (values.password == undefined || values.password == "") {
+              message.error("请输入密码")
+            } else {
+              axios.post('http://localhost:8080/userLogin/login', {
+                  username:values.username,
+                  password:values.password
               }
-            })
-            return
-          }
+              ).then(response => {
+                console.log(response)
+                if (response.status == 200) {
+                  message.success("登录成功");
+                  authenticateSuccess(response.data.userName);
+                  sessionStorage.userRole = JSON.stringify(response.data.userRole)
+                  // const {from} = this.props.location.state || {from: {pathname: '/'}}
+                  // this.props.history.push(from)
+                  // authenticateSuccess(response.data.userName);
+                  // sessionStorage.userRole = JSON.stringify(response.data.userRole)
+                  this.props.history.push('/home')
+                }
+                if (response.statusr == 500) {
+                  message.error("用户名或密码错误")
+                }
+              }).catch(response => {
+                message.error("请求失败,请联系管理员")
+              })
+            }
+          // axios.post('http://localhost:8080/userLogin/login',{
+          //   username:values.username,
+          //   password:values.password
+          // }).then((response) => {
+          //  this.props.history.push('/home')
+          //  console.log(response)
+          // })
         }
+        // const users = this.props.appStore.users
+        // console.log(users)
+        // // 检测用户名是否存在
+        // const result = users.find(item => item.username === values.username)
+        // console.log(result)
+        // if (!result) {
+        //   this.props.form.setFields({
+        //     username: {
+        //       value: values.username,
+        //       errors: [new Error('用户名不存在')]
+        //     }
+        //   })
+        //   return
+        // } else {
+        //   //检测密码是否错误
+        //   if (result.password !== values.password) {
+        //     this.props.form.setFields({
+        //       password: {
+        //         value: values.password,
+        //         errors: [new Error('密码错误')]
+        //       }
+        //     })
+        //     return
+        //   }
+        // }
 
-        this.props.appStore.toggleLogin(true, {username: values.username})
-
-        const {from} = this.props.location.state || {from: {pathname: '/'}}
-        this.props.history.push(from)
-      }
+        // this.props.appStore.toggleLogin(true, {username: values.username})
+        // const {from} = this.props.location.state || {from: {pathname: '/'}}
+        // this.props.history.push(from)
     })
   }
-  register = () => {
-    this.props.switchShowBox('register')
-    setTimeout(() => this.props.form.resetFields(), 500)
-  }
+  // register = () => {
+  //   this.props.switchShowBox('register')
+  //   setTimeout(() => this.props.form.resetFields(), 500)
+  // }
 
   render () {
     const {getFieldDecorator, getFieldError} = this.props.form
