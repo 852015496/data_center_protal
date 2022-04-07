@@ -64,11 +64,11 @@ const columns = [
     key: 'action',
     render: (text, record) => (
       <span size="middle">
-        <a onClick>停止</a>
+        <a onClick = {this.stop}>停止</a>
         <Divider type="vertical" />
-        <a>启动</a>
+        <a onClick = {this.running}>启动</a>
         <Divider type="vertical" />
-        <a>暂停</a>
+        <a onClick = {this.stoped}>暂停</a>
       </span>
     ),
   },
@@ -138,6 +138,28 @@ class service extends React.Component {
   //   })
   // }
   // http://192.168.1.124:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1647855420&end=1647856320&step=30
+
+
+
+  stop = () =>{
+    axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=3").then((response)=>{
+
+    })
+  }
+
+  running = () =>{
+    axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=1").then((response)=>{
+      
+    })
+  }
+
+  stoped = () =>{
+    axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=2").then((response)=>{
+      
+    })
+  }
+
+    
 
   getCPUMesage = () =>{
     axios.get('http://192.168.1.124:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1648188300&end=1648189200&step=60'
