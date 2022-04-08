@@ -143,19 +143,19 @@ class service extends React.Component {
 
   stop = () =>{
     axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=3").then((response)=>{
-
+      console.log(response)
     })
   }
 
   running = () =>{
     axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=1").then((response)=>{
-      
+      console.log(response)
     })
   }
 
   stoped = () =>{
     axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=2").then((response)=>{
-      
+      console.log(response)
     })
   }
 
