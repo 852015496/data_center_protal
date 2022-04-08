@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card,Row,Col,Table, Tag,Divider,Switch,PageHeader} from 'antd';
+import {Card,Row,Col,Table, Tag,Divider,Switch,PageHeader,Modal,message} from 'antd';
 import { Chart, Geom, Axis, G2,
   Tooltip,
   Coord,
@@ -18,61 +18,7 @@ import ReactEcharts from 'echarts-for-react'  //用这个插件解决
 import { param } from 'jquery';
 
 
-const columns = [
-  {
-    title: '编号',
-    dataIndex: 'id',
-    key: 'id',
-    render: text => <a>{text}</a>,
-  },
-  {
-    title: '任务名称',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'cron表达式',
-    dataIndex: 'cron',
-    key: 'cron',
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'status',
-    render : (text,record) => {
-      return(
-          <div>
-              {
-                  text === 0 ? <Tag color="#FF0000">停止</Tag> : text === 1 ? <Tag color="#008000">运行</Tag> : <Tag color="#FFD700">暂停</Tag>
-              }
-          </div>
-      )
-  }
-  },
-  {
-    title: '类名称',
-    dataIndex: 'className',
-    key: 'className',
-  },
-  {
-    title: '修改时间',
-    dataIndex: 'updateTime',
-    key: 'updateTime',
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: (text, record) => (
-      <span size="middle">
-        <a onClick = {this.stop}>停止</a>
-        <Divider type="vertical" />
-        <a onClick = {this.running}>启动</a>
-        <Divider type="vertical" />
-        <a onClick = {this.stoped}>暂停</a>
-      </span>
-    ),
-  },
-];
+
 
 const data = [
   {
@@ -141,22 +87,34 @@ class service extends React.Component {
 
 
 
-  stop = () =>{
-    axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=3").then((response)=>{
-      console.log(response)
-    })
-  }
-
   running = () =>{
     axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=1").then((response)=>{
       console.log(response)
     })
   }
 
-  stoped = () =>{
+  
+  pause = () =>{
     axios.get("http://localhost:8080/mqtt/sendcommand?jobId=1&status=2").then((response)=>{
       console.log(response)
     })
+  }
+
+  stop =()=> {
+    Modal.confirm({
+      title: '停止',
+      content: '停止操作将同时恢复空调默认参数',
+      onOk :() => {
+        axios.get('http://localhost:8080/mqtt/sendcommand?jobId=1&status=0').then((response)=>{
+                    message.success('删除成功');
+                    this.getByUserList()
+                  })
+        // return new Promise((resolve, reject) => {
+        //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        // }).catch(() => console.log('Oops errors!'));
+      },
+      onCancel() {},
+    });
   }
 
     
@@ -307,6 +265,62 @@ class service extends React.Component {
   }
 
   render() {
+
+    const columns = [
+      {
+        title: '编号',
+        dataIndex: 'id',
+        key: 'id',
+        render: text => <a>{text}</a>,
+      },
+      {
+        title: '任务名称',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: 'cron表达式',
+        dataIndex: 'cron',
+        key: 'cron',
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        render : (text,record) => {
+          return(
+              <div>
+                  {
+                      text === 0 ? <Tag color="#FF0000">停止</Tag> : text === 1 ? <Tag color="#008000">运行</Tag> : <Tag color="#FFD700">暂停</Tag>
+                  }
+              </div>
+          )
+      }
+      },
+      {
+        title: '类名称',
+        dataIndex: 'className',
+        key: 'className',
+      },
+      {
+        title: '修改时间',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
+      },
+      {
+        title: '操作',
+        key: 'action',
+        render: (text, record) => (
+          <span size="middle">
+            <a onClick = {this.stop}>停止</a>
+            <Divider type="vertical" />
+            <a onClick = {this.running}>启动</a>
+            <Divider type="vertical" />
+            <a onClick = {this.pause}>暂停</a>
+          </span>
+        ),
+      },
+    ];
     const ds = new DataSet();
     const dv = ds.createView().source(this.state.ContainerNetwork);
     const df = ds.createView().source(this.state.MemoryArr);
