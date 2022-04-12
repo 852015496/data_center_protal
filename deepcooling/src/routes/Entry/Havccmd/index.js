@@ -48,7 +48,7 @@ class havccmd extends React.Component {
   }
 
   havcList = () => {
-    axios.get('http://192.168.1.153:8080/havccmd/list').then((response) => {
+    axios.get('http://localhost:8080/havccmd/list').then((response) => {
       var data = response.data.content
       console.log(data)
       this.setState({

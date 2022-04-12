@@ -63,7 +63,7 @@ class Home extends React.Component {
   }
 
   buildingNumber = () => {
-    axios.get('http://127.0.0.1:8080/building/getcountbyidc?idcId=105').then((response) => {
+    axios.get('http://localhost:8080/building/getcountbyidc?idcId=105').then((response) => {
       // console.log(response);
       var buildingNumber = response.data;
       this.setState({
@@ -73,7 +73,7 @@ class Home extends React.Component {
   }
   
   AirRoomNumber = () => {
-    axios.get('http://127.0.0.1:8080/region/getcountbybld?bldId=23').then((response) => {
+    axios.get('http://localhost:8080/region/getcountbybld?bldId=23').then((response) => {
       // console.log(response);
       var AirRoomNumber = response.data;
       this.setState({
@@ -144,13 +144,13 @@ class Home extends React.Component {
 
 
   getRegionByColl = () => {
-    axios.get('http://localhost:8080/region/getRegionByColl').then((response) => {
+    axios.get('http://localhost:8080/sensordata/getAllRegionAvg?idcId=105&valueName=temperature').then((response) => {
       console.log(response);
       let ydata = []
       let xdata = []
      for (let i = 0; i < response.data.length; i++) {
-      ydata.push(response.data[i].valuename) 
-      xdata.push(response.data[i].value)
+      ydata.push(response.data[i].regionName) 
+      xdata.push(response.data[i].avgTemp)
      }
      console.log(ydata)
       console.log(xdata)
@@ -553,7 +553,7 @@ class Home extends React.Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card size="small" title="机房空调平均制冷量" bordered={false}>
+              <Card size="small" title="机房平均温度" bordered={false}>
                  <div style={{
               width: '555px',
               height: '285px',

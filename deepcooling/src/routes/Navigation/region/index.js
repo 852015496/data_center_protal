@@ -122,7 +122,7 @@ class region extends React.Component {
     
 
     serviceList = () => {
-        axios.get('http://192.168.1.153:8080/region/list').then((response) => {
+        axios.get('http://localhost:8080/region/list').then((response) => {
             var data = response.data.content
             this.setState({
                 data:data
@@ -131,7 +131,7 @@ class region extends React.Component {
     }
     
     prometheusList = () => {
-        axios.get('http://localhost:8080/doget?urlstring=http://192.168.1.124:9090/api/v1/targets').then((response) => {
+        axios.get('http://localhost/doget?urlstring=http://prometheus:9090/api/v1/targets').then((response) => {
             // console.log(response);
             let data =[];
             for (let i = 0; i < response.data.data.activeTargets.length; i++) {

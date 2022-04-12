@@ -28,8 +28,8 @@ const columns = [
   },
   {
       title: '空调回风温度',
-      dataIndex: 'returnAirTemp',
-      key: 'returnAirTemp',
+      dataIndex: 'returnAirTempValue',
+      key: 'returnAirTempValue',
   },
 //   {
 //       title: '水阀开度',
@@ -71,8 +71,8 @@ const columns = [
   // },
   {
       title: '空调制冷量',
-      dataIndex: 'coolingDemand',
-      key: 'coolingDemand',
+      dataIndex: 'coolingDemandValue',
+      key: 'coolingDemandValue',
   },
   // {
   //     title: '操作',
@@ -142,6 +142,7 @@ class AnimationDemo extends React.Component{
       loading: false,
       hasMore: true,
       coolingDemand:"",
+      tableArr:""
     }
 
     getTwoOption = ()=>{
@@ -197,6 +198,25 @@ class AnimationDemo extends React.Component{
     }
     
 
+
+    getTableList = ()=>{
+      axios.get('http://localhost:8080/havcdata/getHavcList').then((response) => {
+          console.log(response);
+          let dataArr =[];
+          for (let i = 0; i < response.data.length; i++) {
+            dataArr.push({
+              addtime:moment(response.data[i].addtime).format("YYYY-MM-DD"),
+              returnAirTemp:response.data[i].valuename,
+              returnAirTempValue:response.data[i].value,
+              coolingDemand:response.data[i].value,
+              coolingDemandValue:response.data[i].value,
+            })
+          }
+          this.setState({
+            tableArr:dataArr
+          })
+        })
+    }
     
 
       getReturnAirTemp = () => {
@@ -250,6 +270,7 @@ class AnimationDemo extends React.Component{
     componentDidMount(){
         this.getReturnAirTemp();
         this.getCoolingDemand();
+        this.getTableList();
     }
 
    
@@ -299,7 +320,7 @@ class AnimationDemo extends React.Component{
            </Card>
           </Col>
         </Row>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={this.state.tableArr} />
       </div>
     )
   }

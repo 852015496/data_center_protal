@@ -83,7 +83,7 @@ class service extends React.Component {
   //     })
   //   })
   // }
-  // http://192.168.1.124:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1647855420&end=1647856320&step=30
+  // http://localhost:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1647855420&end=1647856320&step=30
 
 
 
@@ -120,7 +120,7 @@ class service extends React.Component {
     
 
   getCPUMesage = () =>{
-    axios.get('http://192.168.1.124:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1648188300&end=1648189200&step=60'
+    axios.get('http://localhost:9090/api/v1/query_range?query=sum(rate(process_cpu_seconds_total%5B50s%5D))%20*%20100&start=1648188300&end=1648189200&step=60'
     ).then((rep) =>{
       console.log(rep)
       let data = rep.data.data.result[0].values;
@@ -165,7 +165,7 @@ class service extends React.Component {
 
 
   getMemoryMesage = () =>{
-    axios.get('http://192.168.1.124:9090/api/v1/query_range?query=node_memory_MemAvailable&start=1648188300&end=1648189200&step=60'
+    axios.get('http://localhost:9090/api/v1/query_range?query=node_memory_MemAvailable&start=1648188300&end=1648189200&step=60'
     ).then((rep) =>{
       console.log(rep)
       let data = rep.data.data.result[0].values;

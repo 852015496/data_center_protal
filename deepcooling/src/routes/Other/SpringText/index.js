@@ -21,7 +21,7 @@ import ReactEcharts from 'echarts-for-react'
 
 let data1;
 $.ajax({
-  url: "http://localhost:8080/sensordata/getTempbyregion?regionName=电信研究院508机房",
+  url: "http://localhost:8080/sensordata/getlastbyregion?regionId=1&valueName=temperature",
   async : false,
   success: (iData) => { data1 = iData }
 });
@@ -224,12 +224,12 @@ class SpringText extends React.Component{
   }
 
   getRegionByColl = () => {
-    axios.get('http://localhost:8080/region/getRegionByColl').then((response) => {
+    axios.get('http://localhost:8080/region/getRegionByColl?regionId=1&valueName=coolingDemand').then((response) => {
       console.log(response);
       let ydata = []
       let xdata = []
      for (let i = 0; i < response.data.length; i++) {
-      ydata.push(response.data[i].valuename) 
+      ydata.push(response.data[i].name) 
       xdata.push(response.data[i].value)
      }
      console.log(ydata)
